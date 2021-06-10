@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  simple-message-board-local:
+    image: "amazon/dynamodb-local:1.16.0"
+    container_name: dynamodb-local
+    working_dir: /home/dynamodblocal
+    command: "-jar DynamoDBLocal.jar -sharedDb -optimizeDbBeforeStartup -dbPath ./"
+    ports:
+      - "8000:8000"
+    volumes:
+      - simple-message-board-local:/home/dynamodblocal/data
+
+volumes:
+  simple-message-board-local:
+    name: simple-message-board-local
