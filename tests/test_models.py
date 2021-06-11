@@ -1,0 +1,86 @@
+import uuid
+from datetime import datetime
+
+from messageboard.models import ObjectType, User, Board, Message
+
+
+def _to_isoformat(dt: datetime = None):
+    if not dt:
+        dt = datetime.utcnow()
+    return f"{dt.isoformat(sep='T', timespec='milliseconds')}Z"
+
+
+def test_user_init():
+    obj_id = str(uuid.uuid4())
+    dt = _to_isoformat()
+    user = User(obj_id, "john", dt, dt, "john.doe@email.com", [], ObjectType.USER)
+
+    assert user.obj_id == obj_id
+    assert user.name == "john"
+    assert user.created_at == dt
+    assert user.updated_at == dt
+    assert user.board_ids == []
+    assert user.obj_type == ObjectType.USER
+
+
+def test_user_to_dict():
+    obj_id = str(uuid.uuid4())
+    dt = _to_isoformat()
+    init_dict = {
+        "obj_id": obj_id,
+        "name": "john",
+        "created_at": dt,
+        "updated_at": dt,
+        "email": "john.doe@email.com",
+        "board_ids": [],
+        "obj_type": ObjectType.USER,
+    }
+
+    user = User.from_dict(init_dict)
+
+    assert user.to_dict() == init_dict
+
+
+def test_user_model_comparison():
+    obj_id = str(uuid.uuid4())
+    dt = _to_isoformat()
+    init_dict = {
+        "obj_id": obj_id,
+        "name": "john",
+        "created_at": dt,
+        "updated_at": dt,
+        "email": "john.doe@email.com",
+        "board_ids": [],
+        "obj_type": ObjectType.USER,
+    }
+
+    user1 = User.from_dict(init_dict)
+    user2 = User.from_dict(init_dict)
+
+    assert user1 == user2
+
+
+def test_board_init():
+    obj_id = str(uuid.uuid4())
+    dt = _to_isoformat()
+    board = Board(obj_id, "the board", dt, dt, ObjectType.BOARD)
+
+    assert board.obj_id == obj_id
+    assert board.name == "the board"
+    assert board.created_at == dt
+    assert board.updated_at == dt
+    assert board.obj_type == ObjectType.BOARD
+
+
+def test_message_init():
+    obj_id = str(uuid.uuid4())
+    dt = _to_isoformat()
+    message = Message(obj_id, "the message", obj_id, obj_id, dt, dt, ObjectType.MESSAGE)
+
+    assert message.obj_id == obj_id
+    assert message.message == "the message"
+    assert message.user_id == obj_id
+    assert message.board_id == obj_id
+    assert message.created_at == dt
+    assert message.updated_at == dt
+    assert message.obj_type == ObjectType.MESSAGE
