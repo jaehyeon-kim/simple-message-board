@@ -8,8 +8,10 @@ pytest = "*"
 pytest-cov = "*"
 black = "*"
 ipdb = "*"
+boto3 = "*"
 
 [packages]
+aws-lambda-powertools = "*"
 
 [pipenv]
 allow_prereleases = true
