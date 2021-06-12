@@ -1,7 +1,7 @@
 import os
 import boto3
 import pytest
-from moto import mock_s3, mock_dynamodb2
+from moto import mock_dynamodb2
 
 
 def pytest_generate_tests(metafunc):
