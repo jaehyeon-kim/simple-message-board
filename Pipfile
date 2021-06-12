@@ -9,6 +9,7 @@ pytest-cov = "*"
 black = "*"
 ipdb = "*"
 boto3 = "*"
+moto = "*"
 
 [packages]
 aws-lambda-powertools = "*"
