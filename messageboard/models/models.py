@@ -2,6 +2,11 @@ import dataclasses
 from typing import List
 
 
+class ObjectKey:
+    USER = "user"
+    BOARD = "board"
+
+
 class ObjectType:
     USER = "user"
     BOARD = "board"
@@ -19,6 +24,7 @@ class DictMixin:
 
 @dataclasses.dataclass
 class User(DictMixin):
+    obj_key: str
     obj_id: str
     name: str
     created_at: str
@@ -30,6 +36,7 @@ class User(DictMixin):
 
 @dataclasses.dataclass
 class Board(DictMixin):
+    obj_key: str
     obj_id: str
     name: str
     created_at: str
@@ -39,6 +46,7 @@ class Board(DictMixin):
 
 @dataclasses.dataclass
 class Message(DictMixin):
+    obj_key: str
     obj_id: str
     message: str
     user_id: str
