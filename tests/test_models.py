@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from messageboard.models import ObjectType, User, Board, Message
+from messageboard.models import ObjectKey, ObjectType, User, Board, Message
 
 
 def _to_isoformat(dt: datetime = None):
@@ -11,10 +11,12 @@ def _to_isoformat(dt: datetime = None):
 
 
 def test_user_init():
-    obj_id = str(uuid.uuid4())
+    obj_key = ObjectKey.USER
+    obj_id = f"user#{uuid.uuid4()}"
     dt = _to_isoformat()
-    user = User(obj_id, "john", dt, dt, "john.doe@email.com", [], ObjectType.USER)
+    user = User(obj_key, obj_id, "john", dt, dt, "john.doe@email.com", [], ObjectType.USER)
 
+    assert user.obj_key == obj_key
     assert user.obj_id == obj_id
     assert user.name == "john"
     assert user.created_at == dt
@@ -24,9 +26,10 @@ def test_user_init():
 
 
 def test_user_to_dict():
-    obj_id = str(uuid.uuid4())
+    obj_id = f"user#{uuid.uuid4()}"
     dt = _to_isoformat()
     init_dict = {
+        "obj_key": ObjectKey.USER,
         "obj_id": obj_id,
         "name": "john",
         "created_at": dt,
@@ -42,9 +45,10 @@ def test_user_to_dict():
 
 
 def test_user_model_comparison():
-    obj_id = str(uuid.uuid4())
+    obj_id = f"user#{uuid.uuid4()}"
     dt = _to_isoformat()
     init_dict = {
+        "obj_key": ObjectKey.USER,
         "obj_id": obj_id,
         "name": "john",
         "created_at": dt,
@@ -61,10 +65,12 @@ def test_user_model_comparison():
 
 
 def test_board_init():
-    obj_id = str(uuid.uuid4())
+    obj_key = ObjectKey.BOARD
+    obj_id = f"board#{uuid.uuid4()}"
     dt = _to_isoformat()
-    board = Board(obj_id, "the board", dt, dt, ObjectType.BOARD)
+    board = Board(obj_key, obj_id, "the board", dt, dt, ObjectType.BOARD)
 
+    assert board.obj_key == obj_key
     assert board.obj_id == obj_id
     assert board.name == "the board"
     assert board.created_at == dt
@@ -73,10 +79,12 @@ def test_board_init():
 
 
 def test_message_init():
-    obj_id = str(uuid.uuid4())
+    obj_key = ObjectKey.BOARD
+    obj_id = f"msg#{uuid.uuid4()}"
     dt = _to_isoformat()
-    message = Message(obj_id, "the message", obj_id, obj_id, dt, dt, ObjectType.MESSAGE)
+    message = Message(obj_key, obj_id, "the message", obj_id, obj_id, dt, dt, ObjectType.MESSAGE)
 
+    assert message.obj_key == obj_key
     assert message.obj_id == obj_id
     assert message.message == "the message"
     assert message.user_id == obj_id
