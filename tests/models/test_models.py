@@ -2,14 +2,7 @@ import uuid
 from datetime import datetime
 
 from messageboard.models.models import ObjectKey, ObjectType, User, Board, Message
-
 from messageboard.utils.common import to_isoformat
-
-
-# def _to_isoformat(dt: datetime = None):
-#     if not dt:
-#         dt = datetime.utcnow()
-#     return f"{dt.isoformat(sep='T', timespec='milliseconds')}Z"
 
 
 def test_user_init():
