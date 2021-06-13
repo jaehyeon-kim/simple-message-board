@@ -44,7 +44,7 @@ def dynamodb_table(dynamodb):
         ],
         GlobalSecondaryIndexes=[
             {
-                "IndexName": os.environ["QUERY_ITEMS_INDEX"],
+                "IndexName": os.environ["QUERY_USER_INDEX"],
                 "KeySchema": [
                     {"AttributeName": "email", "KeyType": "HASH"},
                 ],
