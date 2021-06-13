@@ -28,12 +28,12 @@ def dynamodb(aws_credentials):
 
 
 @pytest.fixture(scope="function")
-def dynamodb_table(dynamodb):
+def items_table(dynamodb):
     """Create a DynamoDB surveys table fixture."""
     table = dynamodb.create_table(
         TableName=os.environ["ITEMS_TABLE"],
         KeySchema=[
-            {"AttributeName": "obj_key", "AttributeType": "HASH"},
+            {"AttributeName": "obj_key", "KeyType": "HASH"},
             {"AttributeName": "obj_id", "KeyType": "RANGE"},
         ],
         AttributeDefinitions=[
