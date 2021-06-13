@@ -1,19 +1,21 @@
 import uuid
 from datetime import datetime
 
-from messageboard.models import ObjectKey, ObjectType, User, Board, Message
+from messageboard.models.models import ObjectKey, ObjectType, User, Board, Message
+
+from messageboard.utils.common import to_isoformat
 
 
-def _to_isoformat(dt: datetime = None):
-    if not dt:
-        dt = datetime.utcnow()
-    return f"{dt.isoformat(sep='T', timespec='milliseconds')}Z"
+# def _to_isoformat(dt: datetime = None):
+#     if not dt:
+#         dt = datetime.utcnow()
+#     return f"{dt.isoformat(sep='T', timespec='milliseconds')}Z"
 
 
 def test_user_init():
     obj_key = ObjectKey.USER
     obj_id = f"user#{uuid.uuid4()}"
-    dt = _to_isoformat()
+    dt = to_isoformat()
     user = User(obj_key, obj_id, "john", dt, dt, "john.doe@email.com", [], ObjectType.USER)
 
     assert user.obj_key == obj_key
@@ -27,7 +29,7 @@ def test_user_init():
 
 def test_user_to_dict():
     obj_id = f"user#{uuid.uuid4()}"
-    dt = _to_isoformat()
+    dt = to_isoformat()
     init_dict = {
         "obj_key": ObjectKey.USER,
         "obj_id": obj_id,
@@ -46,7 +48,7 @@ def test_user_to_dict():
 
 def test_user_model_comparison():
     obj_id = f"user#{uuid.uuid4()}"
-    dt = _to_isoformat()
+    dt = to_isoformat()
     init_dict = {
         "obj_key": ObjectKey.USER,
         "obj_id": obj_id,
@@ -67,7 +69,7 @@ def test_user_model_comparison():
 def test_board_init():
     obj_key = ObjectKey.BOARD
     obj_id = f"board#{uuid.uuid4()}"
-    dt = _to_isoformat()
+    dt = to_isoformat()
     board = Board(obj_key, obj_id, "the board", dt, dt, ObjectType.BOARD)
 
     assert board.obj_key == obj_key
@@ -81,7 +83,7 @@ def test_board_init():
 def test_message_init():
     obj_key = ObjectKey.BOARD
     obj_id = f"msg#{uuid.uuid4()}"
-    dt = _to_isoformat()
+    dt = to_isoformat()
     message = Message(obj_key, obj_id, "the message", obj_id, obj_id, dt, dt, ObjectType.MESSAGE)
 
     assert message.obj_key == obj_key
