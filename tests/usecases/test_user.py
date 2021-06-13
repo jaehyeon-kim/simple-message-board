@@ -3,20 +3,14 @@ import uuid
 from datetime import datetime
 
 from messageboard.models.models import ObjectKey, ObjectType, User
-
-
-def _to_isoformat(dt: datetime = None):
-    if not dt:
-        dt = datetime.utcnow()
-    return f"{dt.isoformat(sep='T', timespec='milliseconds')}Z"
-
+from messageboard.utils.common import to_isoformat
 
 user_dict = {
     "obj_key": ObjectKey.USER,
     "obj_id": f"user#{uuid.uuid4()}",
     "name": "john",
-    "created_at": _to_isoformat(),
-    "updated_at": _to_isoformat(),
+    "created_at": to_isoformat(),
+    "updated_at": to_isoformat(),
     "email": "john.doe@email.com",
     "board_ids": [],
     "obj_type": ObjectType.USER,
