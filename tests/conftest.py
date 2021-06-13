@@ -7,6 +7,8 @@ from moto import mock_dynamodb2
 def pytest_generate_tests(metafunc):
     os.environ["AWS_REGION"] = "us-east-1"
     os.environ["ITEMS_TABLE"] = "simple-message-board"
+    os.environ["QUERY_USER_INDEX"] = "query-user"
+    os.environ["QUERY_ITEMS_INDEX"] = "query-items"
     os.environ["QUERY_ALL_OBJECTS_INDEX"] = "query-all-objects"
 
 
@@ -31,23 +33,45 @@ def dynamodb_table(dynamodb):
     table = dynamodb.create_table(
         TableName=os.environ["ITEMS_TABLE"],
         KeySchema=[
-            {"AttributeName": "objId", "KeyType": "HASH"},
+            {"AttributeName": "obj_key", "AttributeType": "HASH"},
+            {"AttributeName": "obj_id", "KeyType": "RANGE"},
         ],
         AttributeDefinitions=[
-            {"AttributeName": "objId", "AttributeType": "S"},
-            {"AttributeName": "objType", "AttributeType": "S"},
+            {"AttributeName": "obj_key", "AttributeType": "S"},
+            {"AttributeName": "obj_id", "AttributeType": "S"},
+            {"AttributeName": "obj_type", "AttributeType": "S"},
+            {"AttributeName": "email", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
             {
-                "IndexName": os.environ["QUERY_ALL_OBJECTS_INDEX"],
+                "IndexName": os.environ["QUERY_ITEMS_INDEX"],
                 "KeySchema": [
-                    {"AttributeName": "objType", "KeyType": "HASH"},
-                    {"AttributeName": "objId", "KeyType": "RANGE"},
+                    {"AttributeName": "email", "KeyType": "HASH"},
                 ],
                 "Projection": {
                     "ProjectionType": "ALL",
                 },
-            }
+            },
+            {
+                "IndexName": os.environ["QUERY_ITEMS_INDEX"],
+                "KeySchema": [
+                    {"AttributeName": "obj_key", "KeyType": "HASH"},
+                    {"AttributeName": "obj_id", "KeyType": "RANGE"},
+                ],
+                "Projection": {
+                    "ProjectionType": "ALL",
+                },
+            },
+            {
+                "IndexName": os.environ["QUERY_ALL_OBJECTS_INDEX"],
+                "KeySchema": [
+                    {"AttributeName": "obj_type", "KeyType": "HASH"},
+                    {"AttributeName": "obj_id", "KeyType": "RANGE"},
+                ],
+                "Projection": {
+                    "ProjectionType": "ALL",
+                },
+            },
         ],
         BillingMode="PAY_PER_REQUEST",
     )
