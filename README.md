@@ -17,6 +17,12 @@ Additionally, it would be great to allow users to:
 - Get boards a user has posted to
 - Get messages posted between certain timestamps
 
+## Testing
+
+```bash
+POWERTOOLS_TRACE_DISABLED=1 pytest -svv --cov messageboard --cov-report term-missing
+```
+
 ## Development Environment Setup
 
 ### Pipenv
