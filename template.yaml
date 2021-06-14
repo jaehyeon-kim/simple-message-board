@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Hello world event handler API Gateway
+
+Parameters:
+  StageName:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - test
+      - prod
+
+Globals:
+  Api:
+    EndpointConfiguration: EDGE
+    TracingEnabled: true
+    BinaryMediaTypes:
+      - "*~1*" # converts to */* for any binary type
+  Function:
+    Timeout: 6
+    MemorySize: 128
+    Runtime: python3.8
+    Tracing: Active
+    AutoPublishAlias: live
+    Environment:
+      Variables:
+        LOG_LEVEL: INFO
+        POWERTOOLS_LOGGER_SAMPLE_RATE: 0.1
+        POWERTOOLS_LOGGER_LOG_EVENT: true
+        POWERTOOLS_SERVICE_NAME: simple-message-board
+        POWERTOOLS_METRICS_NAMESPACE: message-board
+
+Resources:
+  APIGWCloudWatchRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+
+  ApiGWAccount:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn: !GetAtt APIGWCloudWatchRole.Arn
+
+  MessageBoardApi:
+    Type: AWS::Serverless::Api
+    DependsOn:
+      - ApiGWAccount
+    Properties:
+      StageName: !Ref StageName
+      Cors:
+        AllowOrigin: "*"
+        AllowHeaders: "'Content-Type,Authorization,X-Amz-Date'"
+        MaxAge: "'600'"
+
+  UserEndpointFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: messageboard
+      Handler: messageboard.handlers.app.lambda_handler
+      Description: Message board api
+      Events:
+        PostUser:
+          Type: Api
+          Properties:
+            Method: Post
+            Path: /user
+        GetUser:
+          Type: Api
+          Properties:
+            Method: GET
+            Path: /user
