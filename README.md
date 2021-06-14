@@ -23,6 +23,12 @@ Additionally, it would be great to allow users to:
 POWERTOOLS_TRACE_DISABLED=1 pytest -svv --cov messageboard --cov-report term-missing
 ```
 
+## Build & Deploy
+
+```bash
+sam build --use-container --template template.yaml --manifest ./messageboard/requirements.txt
+```
+
 ## Development Environment Setup
 
 ### Pipenv
