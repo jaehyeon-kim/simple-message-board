@@ -1,6 +1,5 @@
 import pytest
 import uuid
-from datetime import datetime
 
 from messageboard.models.models import ObjectKey, ObjectType, User
 from messageboard.utils.common import to_isoformat
