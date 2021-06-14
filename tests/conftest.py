@@ -1,5 +1,6 @@
 import os
 import boto3
+import dataclasses
 import pytest
 from moto import mock_dynamodb2
 
@@ -77,3 +78,17 @@ def items_table(dynamodb):
     )
     table.meta.client.get_waiter("table_exists").wait(TableName=os.environ["ITEMS_TABLE"])
     yield
+
+
+@pytest.fixture(scope="function")
+def lambda_context():
+    @dataclasses.dataclass
+    class LambdaContext:
+        function_name: str = "test"
+        memory_limit_in_mb: int = 128
+        invoked_function_arn: str = (
+            f"arn:aws:lambda:{os.environ['AWS_REGION']}:000000000:function:test"
+        )
+        aws_request_id: str = "52fdfc07-2182-154f-163f-5f0f9a621d72"
+
+    return LambdaContext()
