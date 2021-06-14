@@ -1,5 +1,8 @@
+import uuid
 import dataclasses
 from typing import List
+
+from messageboard.utils.common import to_isoformat
 
 
 class ObjectKey:
@@ -32,6 +35,19 @@ class User(DictMixin):
     email: str
     board_ids: List[str] = dataclasses.field(default_factory=list)
     obj_type: str = ObjectType.USER
+
+    @classmethod
+    def from_request(cls, json_body):
+        return cls(
+            ObjectKey.USER,
+            f"user#{uuid.uuid4()}",
+            json_body["name"],
+            to_isoformat(),
+            to_isoformat(),
+            json_body["email"],
+            [],
+            ObjectType.USER,
+        )
 
 
 @dataclasses.dataclass
